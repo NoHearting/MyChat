@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/circleHead.png</file>
+        <file>C:/Users/ASUS/Pictures/GIf/move.gif</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/qu.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/qpp.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/qarr.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/rokk.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/circleHeadMain.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/seacher.png</file>
+    </qresource>
+</RCC>
