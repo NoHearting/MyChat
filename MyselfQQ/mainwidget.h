@@ -31,7 +31,17 @@ public:
 
 
 private slots:
-   void on_toolButton_2_clicked();
+
+
+   void on_toolButtonMsg_clicked();
+
+   void on_toolButtonLinkMan_clicked();
+
+   void on_toolButtonMove_clicked();
+
+   void on_toolButtonCLose_clicked();
+
+   void on_toolButtonMin_clicked();
 
 private:
     Ui::MainWidget *ui;

@@ -8,5 +8,20 @@
         <file>C:/Users/ASUS/Pictures/ImageMaterials/rokk.png</file>
         <file>C:/Users/ASUS/Pictures/ImageMaterials/circleHeadMain.png</file>
         <file>C:/Users/ASUS/Pictures/ImageMaterials/seacher.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/qqshow.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t11.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t10.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t9.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t7.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t6.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t5.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t4.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t3.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t2.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t1.png</file>
+        <file>C:/Users/ASUS/Pictures/ImageMaterials/t8.png</file>
+    </qresource>
+    <qresource prefix="/Qss">
+        <file>MainWidgetQSS.qss</file>
     </qresource>
 </RCC>

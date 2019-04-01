@@ -75,12 +75,15 @@ void MainWidget::initWindowResouce()
 
 void MainWidget::setMainWinShadow()
 {
-    this->setStyleSheet("#widgetInner{background-color:rgba(238,52,201,85);border-radius:5px;}"
+    this->setStyleSheet("#widgetInner{background-color:white;border-radius:5px;}"
                         "#widgetInnerHead{background-color:rgba(52,238,89,90);}"
                         "#stackedWidget{background-color:rgba(247,212,18,90);}"
                         "QLineEdit{background:transparent;border-width:0;border-style:outset;}"
                         "QLineEdit:focus{background-color:white;}"
-                        "#lineEditSign:hover:!focus{border:1px solid gray;}");
+                        "#lineEditSign:hover:!focus{border:1px solid gray;}"    //个性签名的美化
+                        "#toolButtonMsg,#toolButtonLinkMan,#toolButtonMove{color:gray;background:transparent;border-width:0;border-style:outset;}"
+                        "#toolButtonMsg:checked,#toolButtonLinkMan:checked,#toolButtonMove:checked{color:rgb(66,46,165);border-bottom:2px solid rgb(66,46,165);}"
+                        "#toolButtonMsg:hover,#toolButtonLinkMan:hover,#toolButtonMove:hover{color:black;}");
     QGraphicsDropShadowEffect * shadow = new QGraphicsDropShadowEffect(this);
     shadow->setOffset(0,0);   //阴影偏移量
     shadow->setColor(Qt::black);  //阴影颜色
@@ -88,7 +91,35 @@ void MainWidget::setMainWinShadow()
     ui->widgetInner->setGraphicsEffect(shadow);
 }
 
-void MainWidget::on_toolButton_2_clicked()
+
+void MainWidget::on_toolButtonMsg_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->toolButtonMove->setChecked(false);    //设置按钮为未被选中
+    ui->toolButtonLinkMan->setChecked(false);
+}
+
+void MainWidget::on_toolButtonLinkMan_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->toolButtonMove->setChecked(false);
+    ui->toolButtonMsg->setChecked(false);
+}
+
+void MainWidget::on_toolButtonMove_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+    ui->toolButtonLinkMan->setChecked(false);
+    ui->toolButtonMsg->setChecked(false);
+}
+
+void MainWidget::on_toolButtonCLose_clicked()
 {
     close();
+}
+
+void MainWidget::on_toolButtonMin_clicked()
+{
+    showMinimized();   //最小化显示窗口
+
 }

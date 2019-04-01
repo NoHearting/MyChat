@@ -15,6 +15,8 @@ public:
     explicit ChatWidget(QWidget *parent = 0);
     ~ChatWidget();
 
+    void initChatWindowResouce();
+
 private:
     Ui::ChatWidget *ui;
 };
