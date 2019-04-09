@@ -23,5 +23,6 @@
     </qresource>
     <qresource prefix="/Qss">
         <file>MainWidgetQSS.qss</file>
+        <file>ListWidgetQSS.qss</file>
     </qresource>
 </RCC>

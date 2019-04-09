@@ -9,6 +9,7 @@
 #include <QMovie>
 #include <QDebug>
 #include <QString>
+#include <QMessageBox>
 
 #include "registerwidget.h"
 
@@ -30,6 +31,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *);
     void initWindowResouce();            //初始化窗口的资源配置
     void setIsLogin(bool flag);
+    inline bool getIsLogin(){return isLogin;}
 
 
     /*

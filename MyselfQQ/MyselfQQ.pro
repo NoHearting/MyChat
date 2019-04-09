@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,12 +16,20 @@ SOURCES += main.cpp\
         mainwidget.cpp \
     loginwidget.cpp \
     registerwidget.cpp \
-    chatwidget.cpp
+    chatwidget.cpp \
+    personlistbuddy.cpp \
+    personlist.cpp \
+    makeqss.cpp \
+    persongroup.cpp
 
 HEADERS  += mainwidget.h \
     loginwidget.h \
     registerwidget.h \
-    chatwidget.h
+    chatwidget.h \
+    personlistbuddy.h \
+    personlist.h \
+    makeqss.h \
+    persongroup.h
 
 FORMS    += mainwidget.ui \
     loginwidget.ui \

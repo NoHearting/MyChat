@@ -138,12 +138,21 @@ void LoginWidget::on_toolButton_2_clicked()
     regis->show();
 }
 
-void LoginWidget::on_pushButton_clicked()   //未完成
+
+/*
+    登录按钮：
+    获取账号密码以信号的方式发送到主窗口
+
+*/
+void LoginWidget::on_pushButton_clicked()   //未完成  判断有瑕疵
 {
     //一些信息判断
-    emit loginOk("账号","密码");
-    if(!isLogin)
+    QString id = ui->comboBoxUserID->currentText();
+    QString password = ui->lineEditPassword->text();
+    if(id==""||password=="")
     {
-        qDebug()<<"登录失败";
+        QMessageBox::warning(0,"错误","账号或密码不能为空",QMessageBox::Ok);
+        return;
     }
+    emit loginOk(id,password);
 }

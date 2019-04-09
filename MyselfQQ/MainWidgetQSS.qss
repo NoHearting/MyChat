@@ -1,0 +1,42 @@
+#widgetInner{
+    background-color:white;
+    border-radius:5px;
+
+}
+#widgetInnerHead{
+    background-color:rgba(52,238,89,90);
+
+}
+#stackedWidget{
+    background-color:rgba(247,212,18,90);
+}
+QLineEdit{
+    background:transparent;
+    border-width:0;
+    border-style:outset;
+
+}
+QLineEdit:focus{
+    background-color:white;
+
+}
+#lineEditSign:hover:!focus{         /*个性签名的美化*/
+    border:1px solid gray;
+
+}
+#toolButtonMsg,#toolButtonLinkMan,#toolButtonMove{
+    color:gray;
+    background:transparent;
+    border-width:0;
+    border-style:outset;
+
+}
+#toolButtonMsg:checked,#toolButtonLinkMan:checked,#toolButtonMove:checked{
+    color:rgb(66,46,165);
+    border-bottom:2px solid rgb(66,46,165);
+
+}
+#toolButtonMsg:hover,#toolButtonLinkMan:hover,#toolButtonMove:hover{
+    color:black;
+
+}

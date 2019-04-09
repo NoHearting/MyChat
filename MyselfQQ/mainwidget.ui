@@ -311,12 +311,55 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="pageFriend"/>
+    <widget class="QWidget" name="pageFriend">
+     <widget class="personList" name="listWidgeMsg">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>371</width>
+        <height>521</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>371</width>
+        <height>521</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="friends">
+       <attribute name="title">
+        <string>好友</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="group">
+       <attribute name="title">
+        <string>群组</string>
+       </attribute>
+      </widget>
+     </widget>
+     <zorder>tabWidget</zorder>
+     <zorder>listWidgeMsg</zorder>
+    </widget>
     <widget class="QWidget" name="pageMore"/>
    </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>personList</class>
+   <extends>QListWidget</extends>
+   <header location="global">personlist.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="image.qrc"/>
  </resources>

@@ -7,7 +7,17 @@
 #include <QPoint>
 #include <QString>
 #include <QDebug>
+#include <QListWidgetItem>
+#include <QPainter>
+#include <QPixmap>
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QUdpSocket>
+#include <QHostAddress>
+#include <QMessageBox>
 #include "loginwidget.h"
+#include "chatwidget.h"
+#include "personlist.h"
 
 namespace Ui {
 class MainWidget;
@@ -27,6 +37,8 @@ public:
    void mousePressEvent(QMouseEvent *);
    void mouseReleaseEvent(QMouseEvent *);
    void initWindowResouce();            //初始化窗口的资源配置
+   void initUdpSocket();               //初始化udp
+   void initConnect();
 
 
 
@@ -46,8 +58,14 @@ private slots:
 private:
     Ui::MainWidget *ui;
     QPoint z;
-    LoginWidget * loginWin;
+    personList * groupList;    //显示群组
 
+
+    LoginWidget * loginWin;   //登录界面
+    ChatWidget * chatWin;     //聊天界面
+    QTcpServer * tcpServer;     //监听套接字
+    QTcpSocket * tcpSocket;      //通信（发文件）套接字
+    QUdpSocket * udpSocket;      //通信（聊天）套接字
 
 
     void setMainWinShadow();
