@@ -1,3 +1,21 @@
+/**
+  * @file
+  * @brief 自定义QListWidget类
+  *
+  *     该文件在此工程下已经弃用
+  * @version 1.0
+  * @author zsj
+  * @date 2019年4月24日23:14:24
+  *
+  *
+  *
+  *
+  *
+  *
+  *
+*/
+
+
 #ifndef PERSONLIST_H
 #define PERSONLIST_H
 
@@ -17,6 +35,7 @@
 #include <utility>
 #include <QVector>
 #include <typeinfo>
+
 #define Cout qDebug()<<"["<<__FILE__<<":"<<__LINE__<<"]"
 
 
@@ -39,6 +58,19 @@ public:
     void showData(PersonGroup * pg = 0);
 
 
+    /// @brief 创建原始分组列表信息
+    ///
+    ///     通过多次调用，每次调用添加一条好友信息到分组信息中（速度可能有点慢，待优化）
+    ///     分解传入信息，创建对象添加到分组信息
+    /// @param data 传入的好友信息
+    void set_origin_list_loop(QString & data);
+
+    void clearAllWidget();
+
+
+    void showOriginList();   //调试用的函数
+    void showFriendList();
+
 private:
     QMenu * blankMenu;   //初始化菜单
     QMenu * groupMenu;   //点击组上的菜单
@@ -55,6 +87,7 @@ private:
      * map第一个参数是好友分组信息，第二个参数是一个List，用于保存该分组下的好友
      * 第一个参数是一个Pair类型，其中第一个参数就是该分组的数据结构，第二个则是该分组是否打开
      */
+    QList<QPair<PersonGroup*,QList<personListBuddy*>*>> origin_list_;  ///< 列表信息根本信息  由于刷新列表的一些操作  设置一个根本字符串
     QList<QPair<PersonGroup*,QList<personListBuddy*>*>> friendList;   //用来保存整个好友列表的信息  解决了  但是速率不太行
     QVector<bool>isHideVector;
 

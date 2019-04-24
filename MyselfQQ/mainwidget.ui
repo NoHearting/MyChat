@@ -312,7 +312,7 @@
      </widget>
     </widget>
     <widget class="QWidget" name="pageFriend">
-     <widget class="personList" name="listWidgeMsg">
+     <widget class="QListWidget" name="listWidgeMsg">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -332,7 +332,7 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="friends">
        <attribute name="title">
@@ -353,13 +353,6 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>personList</class>
-   <extends>QListWidget</extends>
-   <header location="global">personlist.h</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="image.qrc"/>
  </resources>

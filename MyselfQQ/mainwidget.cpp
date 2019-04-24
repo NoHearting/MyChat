@@ -15,19 +15,23 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->listWidgeMsg->setParent(ui->tabWidget->widget(0));    //设置父对象   属于哪一个选项
     groupList->setParent(ui->tabWidget->widget(1));
     groupList->setFixedSize(ui->tabWidget->width(),ui->tabWidget->height());
+    //is_hide_vector_.resize(50);
+    //is_hide_vector_.fill(true);   // 全部隐藏
 
 
 
-    connect(ui->listWidgeMsg,&personList::chooseFriend,this,[=](QString name,QString headPath)
-    {
-        if(chatWin==nullptr)
-        {
-            delete chatWin;
-        }
-        chatWin = new ChatWidget;
-        chatWin->setWindowTitle(name);
-        chatWin->show();
-    });
+    // 选择好友的连接
+//    connect(ui->listWidgeMsg,&personList::chooseFriend,this,[=](QString name,QString headPath)
+//    {
+//        if(chatWin==nullptr)
+//        {
+//            delete chatWin;
+//        }
+//        chatWin = new ChatWidget;
+//        chatWin->setWindowTitle(name);
+//        chatWin->show();
+//    });
+    connect(ui->listWidgeMsg,&QListWidget::itemClicked,this,&MainWidget::slotDealClicked);
 }
 
 MainWidget::~MainWidget()
@@ -82,7 +86,21 @@ void MainWidget::initWindowResouce()
     this->setAttribute(Qt::WA_TranslucentBackground);  //设置主窗口背景透明
     chatWin = nullptr;
     groupList = new personList;
+    msg_type_map_["LOGIN"] = LOGIN;
+    msg_type_map_["OFFLINE"] = OFFLINE;
+    msg_type_map_["ADD"] = ADD;
+    msg_type_map_["DELETE"] = DELETE;
+    msg_type_map_["GETINFORMATION"] = GETINFORMATION;
+    msg_type_map_["UPDATA"] = UPDATA;
+    msg_type_map_["OK_GETINFO"] = OK_GETINFO;
 
+//            enum msgType{LOGIN,   //登录信息类型
+//                         OFFLINE, //离线信息类型
+//                         ADD,  //添加
+//                         DELETE, // 删除
+//                         GETINFORMATION,  //获取好友信息
+//                         UPDATA   //更新信息，包括创建，删除分组、群
+//                        };
 //    //最开始为登录界面
 
     ui->widgetInner->hide();
@@ -91,8 +109,10 @@ void MainWidget::initWindowResouce()
     initUdpSocket();
     connect(loginWin,&LoginWidget::loginOk,[=](QString id,QString pwd){    //接收到登录的消息
         //操作
+        uId = id;
+        password = pwd;
         qDebug()<<"收到响应";
-        QString loginData = QString("##%1##%2##").arg(id).arg(pwd);
+        QString loginData = QString("##%1##%2##%3##").arg("LOGIN").arg(id).arg(pwd);
         qint64 len = udpSocket->writeDatagram(loginData.toUtf8(),QHostAddress("127.0.0.1"),10001);   //发送到服务器进行验证
         qDebug()<<"发送了"<<len<<"字节";
 
@@ -116,18 +136,34 @@ void MainWidget::initUdpSocket()   //初始化udpsocket
     connect(udpSocket,&QUdpSocket::readyRead,this,[=](){     //发送消息之后必须接受消息
        while(udpSocket->hasPendingDatagrams())
        {
-           QMessageBox::about(this," ","收到回复消息");
+           //QMessageBox::about(this," ","收到回复消息");
+           qDebug()<<"收到回复消息";
            char buff[1024] = {0};
            QHostAddress serverAddr;     //对方地址
            quint16 port;
-           qint64 len = udpSocket->readDatagram(buff,sizeof(buff),&serverAddr,&port);
-           if(len>0)
-           {
 
+           qint64 len = udpSocket->readDatagram(buff,sizeof(buff),&serverAddr,&port);
+
+           if(len<0)
+           {
+               continue;
+           }
+           QString oriStr = QString(buff);
+           qDebug()<<oriStr;
+           switch(msg_type_map_[oriStr.section("##",1,1)])   //判断消息头代表何种消息类型
+           {
+           case LOGIN:
+               //QMessageBox::about(this," ",datagram.data());
+           {
                if(QString("true") == buff)
                {
                    loginWin->setIsLogin(true);
+                   qDebug()<<"开始获取消息";
+                   udpSocket->writeDatagram(QString("##GETINFORMATION##%1##%2##").arg(uId).arg(password).toUtf8(),QHostAddress("127.0.0.1"),10001);   //发送到服务器进行验证
                }
+
+
+               // 应该放到接收完消息后显示
                if(loginWin->getIsLogin())
                {
                    loginWin->close();
@@ -138,12 +174,38 @@ void MainWidget::initUdpSocket()   //初始化udpsocket
                {
                    QMessageBox::warning(this,"警告","登录错误",QMessageBox::Ok);
                }
-
+           }
+               break;
+           case OFFLINE:
+               break;
+           case ADD:
+               break;
+           case DELETE:
+               break;
+           case GETINFORMATION:
+           {
+//               qDebug()<<oriStr;
+               set_friend_list_info(oriStr);
+           }
+               break;
+           case UPDATA:
+               break;
+           case OK_GETINFO:
+           {
+               qDebug()<<"-----------------------------------";
+               qDebug()<<"\n\n\n\n";
+               showFriendListInfo();
+//               temp();
+               //assignTemp();
+           }
+               break;
            }
        }
     });
 
 }
+
+
 
 void MainWidget::setMainWinShadow()
 {
@@ -153,6 +215,84 @@ void MainWidget::setMainWinShadow()
     shadow->setColor(Qt::black);  //阴影颜色
     shadow->setBlurRadius(5);     //阴影的模糊半径
     ui->widgetInner->setGraphicsEffect(shadow);
+}
+
+void MainWidget::set_friend_list_info(QString &data)
+{
+    //分离data字符串中的数据
+    qDebug()<<"set_friend_list_info";
+    QString group_name = data.section("##",2,2);
+    int group_num = data.section("##",3,3).toInt();
+    QString friend_id = data.section("##",4,4);
+    QString friend_nickname = data.section("##",5,5);
+    QString friend_sign_name = data.section("##",6,6);
+    QString friend_head_path = data.section("##",7,7);   //头像信息有问题  暂时不用
+    bool friend_is_vip = data.section("##",8,8).toInt();
+    int friend_age = data.section("##",9,9).toInt();
+    bool friend_sex = data.section("##",10,10).toInt();
+
+    if(origin_list_.size()<=0)   //当前分组列表里面没有分组则添加一个
+    {
+        origin_list_.push_back(QPair<PersonGroup*,QList<personListBuddy*>*>(
+                                   new PersonGroup(group_name,group_num),
+                                   new QList<personListBuddy*>()));
+
+    }
+
+    bool insert_flag = false;
+    for(auto iter = origin_list_.begin();iter!=origin_list_.end();iter++)
+    {
+        if(iter->first->getGroupName() == group_name)   //如果存在此组  就将好友加到此组
+        {
+            insert_flag = true;
+            iter->second->push_back(new personListBuddy(friend_id,friend_nickname,friend_sign_name,friend_sex,friend_age,friend_is_vip));
+        }
+
+    }
+    if(!insert_flag)
+    {
+        origin_list_.push_back(QPair<PersonGroup*,QList<personListBuddy*>*>(
+                                   new PersonGroup(group_name,group_num),
+                                   new QList<personListBuddy*>()));
+        set_friend_list_info(data);
+    }
+}
+
+void MainWidget::showFriendListInfo(PersonGroup * pg)
+{
+
+    //QList<QPair<PersonGroup*,QList<personListBuddy*>*>> origin_list_
+    for(auto iter = origin_list_.begin();iter!=origin_list_.end();iter++)
+    {
+
+
+        QListWidgetItem * item = new QListWidgetItem();
+        ui->listWidgeMsg->addItem(item);
+        /*
+            问题：void QListWidget::setItemWidget(QListWidgetItem * item, QWidget * widget)
+            函数传入的参数是指针，如果清空QListWidget，会释放其指向的内存
+            恰好，这个程序需要多次释放，出现重大bug，现在稍微解决了一下
+
+        */
+        ui->listWidgeMsg->setItemWidget(item,new PersonGroup(*(iter->first)));
+        item->setSizeHint(QSize(ui->listWidgeMsg->width(),36));
+
+        if(pg!=nullptr&&(*pg)==*(iter->first))   // 选中的是分组
+        {
+            iter->first->reverseIsHiden();
+        }
+        if(!iter->first->get_is_hide())
+        {
+            for(auto itList = iter->second->begin();itList!=iter->second->end();itList++)
+            {
+                QListWidgetItem * itemL = new QListWidgetItem();
+                ui->listWidgeMsg->addItem(itemL);
+                ui->listWidgeMsg->setItemWidget(itemL,new personListBuddy(*(*itList)));
+                itemL->setSizeHint(QSize(ui->listWidgeMsg->width(),60));
+
+            }
+        }
+    }
 }
 
 
@@ -186,5 +326,31 @@ void MainWidget::on_toolButtonCLose_clicked()
 void MainWidget::on_toolButtonMin_clicked()
 {
     showMinimized();   //最小化显示窗口
+
+}
+
+void MainWidget::slotDealClicked(QListWidgetItem * current)
+{
+    QWidget * currWidget = current->listWidget()->itemWidget(current);
+    PersonGroup * temp = nullptr;
+    if(typeid(*currWidget)==typeid(PersonGroup))   //如果点击的是分组选项
+    {
+        qDebug()<<"PersonGroup";
+        temp = (dynamic_cast<PersonGroup*>(currWidget));
+        PersonGroup * t = new PersonGroup(*temp);
+        //temp->setHidden(true);
+        disconnect(ui->listWidgeMsg,&QListWidget::itemClicked,this,&MainWidget::slotDealClicked);
+        ui->listWidgeMsg->clear();
+        showFriendListInfo(t);
+        connect(ui->listWidgeMsg,&QListWidget::itemClicked,this,&MainWidget::slotDealClicked);
+
+    }
+    else if(typeid(*currWidget)==typeid(personListBuddy))  //如果是好友选项
+    {
+        //发出一个信号   打开聊天界面
+        qDebug()<<"personListBuddy";
+        return;
+    }
+
 
 }

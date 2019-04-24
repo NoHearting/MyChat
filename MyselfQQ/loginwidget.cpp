@@ -83,8 +83,10 @@ void LoginWidget::initWindowResouce()
     movie->start();
     movie->setParent(this);   //自动回收资源
 
-    ui->comboBoxUserID->addItem("傻逼  第一个");
+    ui->comboBoxUserID->addItem("1000000");
     ui->comboBoxUserID->addItem("猪头  第二个");
+    ui->comboBoxUserID->addItem("傻逼  第一个");
+    ui->lineEditPassword->setText("123654");
 
     z = QPoint(0,0);
 
