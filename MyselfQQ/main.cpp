@@ -11,9 +11,9 @@ int main(int argc, char *argv[])
 //    c.show();
     MainWidget w;
     //w.show();
-//    LoginWidget login;
-//    login.show();
-    //ChatWidget c;
+    //LoginWidget login;
+    //login.show();
+   // ChatWidget c;
     //c.show();
 
     return a.exec();

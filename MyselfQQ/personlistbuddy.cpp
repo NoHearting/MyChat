@@ -30,7 +30,7 @@ personListBuddy::personListBuddy(QString & id,QString & n,QString & s,bool sex,i
 
 personListBuddy::personListBuddy(const personListBuddy & plb)
 {
-    //qDebug()<<"----------------------复制构造：personListBuddy";
+    qDebug()<<"----------------------复制构造：personListBuddy";
     /*
     QWidget * head;  //创建一个QWidget放头像
     QLabel * name;   //用户名

@@ -47,10 +47,9 @@ void LoginWidget::mouseMoveEvent(QMouseEvent * e)
 void LoginWidget::mousePressEvent(QMouseEvent * e)
 {
 
-    QPoint currGlobalPos = e->globalPos();   //当前鼠标的全局位置
+    QPoint currGlobalPos = e->globalPos();              //当前鼠标的全局位置
     QPoint currLocPos = this->geometry().topLeft();    //当前鼠标点击窗口的左上角坐标
     z = currGlobalPos-currLocPos;
-
 
 }
 

@@ -15,23 +15,12 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->listWidgeMsg->setParent(ui->tabWidget->widget(0));    //设置父对象   属于哪一个选项
     groupList->setParent(ui->tabWidget->widget(1));
     groupList->setFixedSize(ui->tabWidget->width(),ui->tabWidget->height());
-    //is_hide_vector_.resize(50);
-    //is_hide_vector_.fill(true);   // 全部隐藏
 
 
-
-    // 选择好友的连接
-//    connect(ui->listWidgeMsg,&personList::chooseFriend,this,[=](QString name,QString headPath)
-//    {
-//        if(chatWin==nullptr)
-//        {
-//            delete chatWin;
-//        }
-//        chatWin = new ChatWidget;
-//        chatWin->setWindowTitle(name);
-//        chatWin->show();
-//    });
     connect(ui->listWidgeMsg,&QListWidget::itemClicked,this,&MainWidget::slotDealClicked);
+    connect(ui->listWidgeMsg,&QListWidget::itemDoubleClicked,this,&MainWidget::deal_double_clicked);
+    Cout<<udp_port_<<"*************************";
+    Cout<<local_port<<" local_port";
 }
 
 MainWidget::~MainWidget()
@@ -82,6 +71,9 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *)
 */
 void MainWidget::initWindowResouce()
 {
+    srand(time(0));
+    local_port = rand()%5+20001;
+    udp_port_ = rand()%5+10001;
     this->setWindowFlags(Qt::FramelessWindowHint);   //设置窗口无边框
     this->setAttribute(Qt::WA_TranslucentBackground);  //设置主窗口背景透明
     chatWin = nullptr;
@@ -107,14 +99,17 @@ void MainWidget::initWindowResouce()
     loginWin = new LoginWidget;
     loginWin->show();
     initUdpSocket();
+
     connect(loginWin,&LoginWidget::loginOk,[=](QString id,QString pwd){    //接收到登录的消息
         //操作
         uId = id;
         password = pwd;
-        qDebug()<<"收到响应";
+        Cout<<"收到响应";
         QString loginData = QString("##%1##%2##%3##").arg("LOGIN").arg(id).arg(pwd);
-        qint64 len = udpSocket->writeDatagram(loginData.toUtf8(),QHostAddress("127.0.0.1"),10001);   //发送到服务器进行验证
-        qDebug()<<"发送了"<<len<<"字节";
+
+
+        qint64 len = udpSocket->writeDatagram(loginData.toUtf8(),QHostAddress("127.0.0.1"),udp_port_);   //发送到服务器进行验证
+        Cout<<"发送了"<<len<<"字节";
 
     });
 
@@ -132,12 +127,12 @@ void MainWidget::initWindowResouce()
 void MainWidget::initUdpSocket()   //初始化udpsocket
 {
     udpSocket = new QUdpSocket(this);
-    udpSocket->bind(10000);           //绑定到10000端口
+    udpSocket->bind(local_port);           //绑定到端口
     connect(udpSocket,&QUdpSocket::readyRead,this,[=](){     //发送消息之后必须接受消息
        while(udpSocket->hasPendingDatagrams())
        {
            //QMessageBox::about(this," ","收到回复消息");
-           qDebug()<<"收到回复消息";
+           Cout<<"收到回复消息";
            char buff[1024] = {0};
            QHostAddress serverAddr;     //对方地址
            quint16 port;
@@ -149,21 +144,23 @@ void MainWidget::initUdpSocket()   //初始化udpsocket
                continue;
            }
            QString oriStr = QString(buff);
-           qDebug()<<oriStr;
+           Cout<<oriStr;
            switch(msg_type_map_[oriStr.section("##",1,1)])   //判断消息头代表何种消息类型
            {
            case LOGIN:
                //QMessageBox::about(this," ",datagram.data());
            {
-               if(QString("true") == buff)
+               if(QString("true") == oriStr.section("##",2,2))
                {
                    loginWin->setIsLogin(true);
-                   qDebug()<<"开始获取消息";
-                   udpSocket->writeDatagram(QString("##GETINFORMATION##%1##%2##").arg(uId).arg(password).toUtf8(),QHostAddress("127.0.0.1"),10001);   //发送到服务器进行验证
+                   Cout<<"开始获取消息";
+                   udpSocket->writeDatagram(QString("##LOGIN_OK##").arg(uId).arg(password).toUtf8(),QHostAddress("127.0.0.1"),udp_port_);
+                   udpSocket->writeDatagram(QString("##GETINFORMATION##%1##%2##").arg(uId).arg(password).toUtf8(),QHostAddress("127.0.0.1"),udp_port_);   //发送到服务器进行验证
                }
 
 
                // 应该放到接收完消息后显示
+               //  测试   不关闭窗口
                if(loginWin->getIsLogin())
                {
                    loginWin->close();
@@ -184,7 +181,7 @@ void MainWidget::initUdpSocket()   //初始化udpsocket
                break;
            case GETINFORMATION:
            {
-//               qDebug()<<oriStr;
+//               Cout<<oriStr;
                set_friend_list_info(oriStr);
            }
                break;
@@ -192,8 +189,8 @@ void MainWidget::initUdpSocket()   //初始化udpsocket
                break;
            case OK_GETINFO:
            {
-               qDebug()<<"-----------------------------------";
-               qDebug()<<"\n\n\n\n";
+               Cout<<"-----------------------------------";
+               Cout<<"\n\n\n\n";
                showFriendListInfo();
 //               temp();
                //assignTemp();
@@ -220,7 +217,7 @@ void MainWidget::setMainWinShadow()
 void MainWidget::set_friend_list_info(QString &data)
 {
     //分离data字符串中的数据
-    qDebug()<<"set_friend_list_info";
+    Cout<<"set_friend_list_info";
     QString group_name = data.section("##",2,2);
     int group_num = data.section("##",3,3).toInt();
     QString friend_id = data.section("##",4,4);
@@ -335,7 +332,7 @@ void MainWidget::slotDealClicked(QListWidgetItem * current)
     PersonGroup * temp = nullptr;
     if(typeid(*currWidget)==typeid(PersonGroup))   //如果点击的是分组选项
     {
-        qDebug()<<"PersonGroup";
+        Cout<<"PersonGroup";
         temp = (dynamic_cast<PersonGroup*>(currWidget));
         PersonGroup * t = new PersonGroup(*temp);
         //temp->setHidden(true);
@@ -347,10 +344,44 @@ void MainWidget::slotDealClicked(QListWidgetItem * current)
     }
     else if(typeid(*currWidget)==typeid(personListBuddy))  //如果是好友选项
     {
-        //发出一个信号   打开聊天界面
-        qDebug()<<"personListBuddy";
+        Cout<<"personListBuddy";
         return;
     }
 
 
+}
+
+void MainWidget::deal_double_clicked(QListWidgetItem * item)
+{
+    Cout<<"size:   "<<list_chat_window_.size();
+    if(list_chat_window_.size()>50)   //50个窗口开始清理
+    {
+        close_chat_window();
+    }
+
+    QWidget * currWidget = item->listWidget()->itemWidget(item);
+    if(typeid(*currWidget)==typeid(personListBuddy))   //如果点击的是分组选项
+    {
+        personListBuddy * temp = (dynamic_cast<personListBuddy*>(currWidget));
+
+        list_chat_window_.push_back(shared_ptr<ChatWidget>(new ChatWidget(temp)));
+    }
+
+
+
+}
+
+void MainWidget::close_chat_window()
+{
+    for(auto iter = list_chat_window_.begin();iter!=list_chat_window_.end();)
+    {
+        if((*iter)->get_is_close())
+        {
+            list_chat_window_.erase(iter++);
+        }
+        else
+        {
+            ++iter;
+        }
+    }
 }

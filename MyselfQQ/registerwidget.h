@@ -6,6 +6,8 @@
 #include <QMouseEvent>
 #include <QPoint>
 
+#include "makeqss.h"
+
 namespace Ui {
 class RegisterWidget;
 }

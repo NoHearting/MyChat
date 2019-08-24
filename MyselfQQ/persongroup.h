@@ -1,3 +1,13 @@
+/**
+  * @file
+  * @brief 分组栏
+  *
+  *     实现此类应用于好友列表的分组。
+  * @version 1.0
+  * @date 2019年4月30日10:15:24
+  * @author zsj
+*/
+
 #ifndef PERSONGROUP_H
 #define PERSONGROUP_H
 
@@ -5,6 +15,7 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QDebug>
+#include "makeqss.h"
 
 
 /*
@@ -15,6 +26,11 @@
  */
 
 
+/// @class @PerosnGroup
+/// @brief 列表分组类
+///
+///     实现一个小部件，并挂载到QListWidgetItem上，实现QListWidget的多样化
+///
 class PersonGroup : public QWidget
 {
     Q_OBJECT

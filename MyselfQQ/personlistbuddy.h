@@ -10,11 +10,12 @@
 #include <QPixmap>
 #include <QDebug>
 
+#include "makeqss.h"
 
 
 /**
  * @brief The personListBuddy class
- * 主要实现的是QQ好友界面的显示分组和每个好友的显示
+ * 主要实现的是QQ好友界面的每个好友的显示
  * 利用自定义的QWidget实现
  */
 class personListBuddy : public QWidget
@@ -36,6 +37,7 @@ public:
     QString getSign(){return sign->text();}
     QString getName(){return name->text();}
     QString getHeadPath(){return headPath;}
+    QString get_id(){return id_;}
 
     /// @brief 获取类中所有成员信息，并以字符串返回
     /// @param 返回所有信息
